@@ -10,12 +10,12 @@ import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) throws IOException{
-     //   if (args.length == 0) {
-       //     System.err.println("No source file");
-         //   System.exit(1);
-        //}
-        File sourceFile = new File("C:\\Users\\יואב\\Desktop\\yearB\\טטריס\\projects\\07\\MemoryAccess\\StaticTest\\StaticTest.vm");
-        if (sourceFile.isDirectory()) //source is a directory go assemble all files in directory
+        if (args.length == 0) {
+            System.err.println("No source file");
+            System.exit(1);
+        }
+        File sourceFile = new File(args[0]);
+        if (sourceFile.isDirectory()) //source is a directory go translate all files in directory
         {
             File[] files = sourceFile.listFiles();
             for (File file : files)
@@ -24,9 +24,15 @@ public class Main {
                     translateFile(file);
             }
 
-        } else
+        } else //single file
             translateFile(sourceFile);
     }
+
+    /**
+     * translate a single vm file
+     * @param sourceFile
+     * @throws IOException
+     */
 
     public static void translateFile(File sourceFile) throws IOException {
         if (!sourceFile.exists()) {
@@ -43,11 +49,11 @@ public class Main {
         File output = new File(outputPath);
         output.createNewFile();
 
-        Scanner sourceScanner = new Scanner(sourceFile);
-        BufferedWriter outPutWriter = new BufferedWriter(new FileWriter(output));
+        Scanner sourceScanner = new Scanner(sourceFile); //scanner for file read
+        BufferedWriter outPutWriter = new BufferedWriter(new FileWriter(output)); //writer for writing output
         CodeWriter codeWriter = new CodeWriter(outPutWriter, output.getName());
         Parser1 parser = new Parser1 (sourceScanner);
-        while(parser.hasMoreLines())
+        while(parser.hasMoreLines()) //go over the lines of the vm file
         {
             parser.advance();
             outPutWriter.write("//"+parser.currInst+"\n"); //writes comment of the intended command to the file
@@ -67,10 +73,6 @@ public class Main {
 
         sourceScanner.close();
         outPutWriter.close();
-
-
-
-
 
     }
 }

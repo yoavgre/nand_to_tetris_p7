@@ -6,9 +6,9 @@ import java.io.IOException;
 public class CodeWriter {
 
     private BufferedWriter output;
-    String fileName;
+    String fileName; //saves the file name for static memory
 
-    private int ifIndex = 1;
+    private int ifIndex = 1; //index for if conditions in eq, gt,lt commands
 
     private final int TEMP_INDEX=5;
     private final String ADDR= "addr";
@@ -54,7 +54,7 @@ public class CodeWriter {
             output.write("A=M\n");
             output.write("M=-M\n");
         }
-        if(command.equals("eq"))
+        if(command.equals("eq")) //using the ifIndex to create diffrent variable for every condition
         {
             /*
               D=RAM[sp]
@@ -74,7 +74,6 @@ public class CodeWriter {
              * A=M
              * M=-1
              * (false1)
-
              */
             D_sp(); // D=RAM[sp]
             spMinus();
@@ -159,16 +158,24 @@ public class CodeWriter {
         output.write("D=M\n");
     }
 
+    /**
+     *
+     * @param command
+     * @param arg1
+     * @param arg2
+     * @throws IOException
+     */
+
     public void writePushPop (Parser1.commandType command, String arg1, int arg2 ) throws IOException{
         boolean segmentArg = arg1.equals("local") || arg1.equals("argument") || arg1.equals("this") || arg1.equals("that");
         if(command == Parser1.commandType.C_PUSH) // handling push argument
         {
-            if(arg1.equals("constant"))
+            if(arg1.equals("constant")) //handling constant
             {
                 ram_sp_eq_num(arg2); //RAM[sp] = arg2
 
             }
-            if(segmentArg)
+            if(segmentArg) //local or argument or this or that
             {
                 addr_arg_i(convertSegment(arg1), arg2); //addr = segmentPointer + i
                 ptrToPtr(SP, ADDR);//RAM[SP] = RAM[addr]
@@ -322,7 +329,7 @@ public class CodeWriter {
      */
     private void addr_arg_i (String arg, int i) throws IOException
     {
-        /*addr = arg+i
+        /*
           @i
          * D=A
          * @arg
@@ -352,6 +359,8 @@ public class CodeWriter {
         output.write("M=D\n");
     }
 
+
+    //not in use
     private void ptrEqIndex (String ptrTarget, String indexSource)  throws IOException
     {
         output.write("@"+(indexSource)+"\n");
@@ -362,7 +371,7 @@ public class CodeWriter {
     }
 
 
-
+    //not in use
     private void ptrToPtr (String target, String source) throws IOException
     {
         /*
